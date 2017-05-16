@@ -1,0 +1,8 @@
+
+监听事件
+webpack --progress --color --watch
+
+
+
+启动服务
+webpack-dev-server --progress --color
