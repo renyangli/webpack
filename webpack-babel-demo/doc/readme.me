@@ -1,0 +1,55 @@
+Webpack
+
+cnpm install --save-dev babel-loader babel-core
+
+网站
+babeljs.io
+
+
+cnpm install --save-dev babel-preset-latest
+
+
+3个方式
+1、在package.json中
+"babel":{
+  "presets": ["latest"]
+},
+
+2、在.babelrc
+{
+  "presets":["es2015"]
+}
+
+3、在webpack.config.js中
+module:{
+  loaders:[
+    {
+      test: /\.js$/,
+      loader: 'babel-loader',
+      query:{
+        presets: ['latest']
+      }
+    }
+  ]
+},
+
+
+
+
+module:{
+  loaders:[
+    {
+      test: /\.js$/,
+      loader: 'babel-loader',
+      exclude: __dirname+'/node_modules', //提升速度
+      include: __dirname+'/src',
+      query:{
+        presets: ['latest']
+      }
+    }
+  ]
+},
+
+也可以这样表示
+exclude: path.resolve(__dirname,'node_modules'),
+include: path.resolve(__dirname,'src'),

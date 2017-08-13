@@ -1,0 +1,180 @@
+默认名webpack.config.js
+如果改变可以如下命令
+webpack --config webpack.dev.config.js
+
+
+
+
+// [name]
+//[hash]
+//[chunkhash]
+module.exports = {
+
+  entry:{
+    main: './src/script/main.js',
+    a: './src/script/a.js'
+  },
+  output: {
+    path: __dirname+'/dist/js',
+    filename: '[name]-[chunkhash].js'
+  }
+}
+
+https://www.npmjs.com/package/html-webpack-plugin
+安装
+cnpm install html-webpack-plugin --save-dev
+
+在webpack.config.js中引入
+var html-webpack-plugin = require('html-webpack-plugin')
+
+plugins:[
+  new htmlWebpackPlugin({
+    filename: 'index-[hash].html',
+    template: 'index.html',
+    // inject: 'head'
+    //inject: false
+    inject: 'body'
+  })
+]
+
+index.html
+<title><%= htmlWebpackPlugin.options.title %></title>
+<body>
+  <%= htmlWebpackPlugin.options.date%>
+
+  <% for(var key in htmlWebpackPlugin.files){%>
+    <%= key %> : <%= JSON.stringify(htmlWebpackPlugin.files[key]) %>
+  <% } %>
+
+  <% for(var key in htmlWebpackPlugin.options){%>
+    <%= key %> : <%= JSON.stringify(htmlWebpackPlugin.options[key]) %>
+  <% } %>
+</body>
+
+
+设置publicPath的作用
+output: {
+  ...
+  publicPath: 'http://cdn.com'
+  ...
+},
+
+<head>
+  <meta charset="UTF-8">
+  <title>webpack</title>
+  <script src="http://cdn.com/js/main-6c19ec28cae57e827475.js"></script>
+</head>
+
+html-minifier
+https://github.com/kangax/html-minifier#options-quick-reference
+
+plugins:[
+  new htmlWebpackPlugin({
+    ...
+    minify: {
+      removeComments:true,//删除注释
+      collapseWhitespace: true //删除空格
+    }
+    ...
+  })
+]
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>webpack</title><script src="http://cdn.com/js/main-6c19ec28cae57e827475.js"></script></head><body>Fri Aug 11 2017 19:22:57 GMT+0800 (CST)</body></html>
+
+
+
+
+
+
+
+
+
+###############
+chunks
+entry:{
+  main: './src/script/main.js',
+  a: './src/script/a.js',
+  b: './src/script/b.js',
+  c: './src/script/c.js'
+},
+
+
+plugins:[
+  new htmlWebpackPlugin({
+    filename: 'a.html',
+    template: 'index.html',
+    inject: 'body',
+    title: 'webpack is a.html',
+    chunks:['main','a']//包含chunk
+  }),
+  new htmlWebpackPlugin({
+    filename: 'b.html',
+    template: 'index.html',
+    inject: 'body',
+    title: 'webpack is b.html',
+    chunks:['b']
+  }),
+  new htmlWebpackPlugin({
+    filename: 'c.html',
+    template: 'index.html',
+    inject: 'body',
+    title: 'webpack is c.html',
+    chunks:['c']
+
+  })
+]
+
+<head>
+  <meta charset="UTF-8">
+  <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+<body>
+  <%= htmlWebpackPlugin.options.date%>
+  <!-- 我是一哈-->
+</body>
+########################
+
+
+##############
+excludeChunks
+
+plugins:[
+  new htmlWebpackPlugin({
+    ...
+    excludeChunks:['a','b']//除了a,b
+  }),
+  new htmlWebpackPlugin({
+    ...
+    excludeChunks:['a','c']
+  }),
+  new htmlWebpackPlugin({
+    ...
+    excludeChunks:['b','c']
+  })
+]
+
+##############
+
+
+
+
+########################
+<head>
+  <meta charset="UTF-8">
+  <title><%= htmlWebpackPlugin.options.title %></title>
+  <script type="text/javascript">
+    <%= compilation.assets[htmlWebpackPlugin.files.chunks.main.entry.substr(htmlWebpackPlugin.files.publicPath.length)].source() %>
+  </script>
+</head>
+<body>
+
+  <% for(var k in htmlWebpackPlugin.files.chunks){%>
+    <% if(k !== 'main') {%>
+        <script type="text/javascript" src="<%= htmlWebpackPlugin.files.chunks[k].entry%>">
+        </script>
+    <% } %>
+  <% } %>
+
+  <!-- 我是一哈-->
+</body>
+
+###################

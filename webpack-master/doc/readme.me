@@ -1,0 +1,32 @@
+mkdir webpack-master && cd webpack-master
+
+npm init -y
+
+cnpm install webpack --save-dev
+
+创建hello.js
+webpack hello.js hello.bundle.js
+
+webpack 支持3中模块化方式  Amd  Commonjs  ES6模块化
+
+
+cnpm install css-loader style-loader --save-dev
+
+
+
+require('css-loader!./style.css')
+
+
+require('style-loader!css-loader!./style.css')
+
+可以换种方式
+webpack hello.js hello.bundle.js --module-bind 'css=style-loader!css-loader'
+
+
+可以添加--watch 自动加载自动更新
+webpack hello.js hello.bundle.js --module-bind 'css=style-loader!css-loader' --watch
+
+打包过程--progress
+打包模块--display-modules
+打包原因--display-reasons
+webpack hello.js hello.bundle.js --module-bind 'css=style-loader!css-loader' --progress --display-modules --display-reasons
